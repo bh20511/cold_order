@@ -13,6 +13,7 @@ class OrdersViewSet(viewsets.ModelViewSet):
     queryset = Orders.objects.all()
     serializer_class = OrdersSerializer
     http_method_names = ["get", "post"]
+    
 
 
 class CasesViewSet(viewsets.ModelViewSet):
@@ -31,6 +32,15 @@ class ClientsViewSet(viewsets.ModelViewSet):
     queryset = Clients.objects.all()
     serializer_class = ClientsSerializer
     http_method_names = ["get", "post"]
+    @action('GET')
+    def search(self, request, *args, **kwargs):
+        name = request.data.get("company_name")
+        clients = Clients.objects.filter(company_name=name).all()
+        return Response(
+                [{"company_name": client.company_name, "contact": client.contact}for client in clients],
+                status=status.HTTP_200_OK,
+            )
+
 
 
 class SignupViewSet(viewsets.ModelViewSet):
